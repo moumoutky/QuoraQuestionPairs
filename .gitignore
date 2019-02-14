@@ -1,0 +1,6 @@
+*.vscode
+setting.json
+glove.840B.300d.txt
+test.csv
+train.csv
+sample_submission.csv
