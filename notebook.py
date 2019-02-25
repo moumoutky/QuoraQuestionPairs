@@ -19,6 +19,7 @@ from nltk.stem.porter import PorterStemmer
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 #%% [markdown]
@@ -164,9 +165,6 @@ g = sns.FacetGrid(df_train, row="is_duplicate", )
 g = g.map(sns.distplot, "similarity", kde=False, bins=20)
 
 #%%
-df_train.head()
-
-#%%
 g = sns.FacetGrid(df_train, col="is_duplicate",)
 g.map(sns.jointplot, "similarity_w2v", 'similarity_tfidf', kind='hex')
 
@@ -177,8 +175,11 @@ y = df_train['is_duplicate']
 
 
 #%%
-params = {'C': [1, 10, 100]}
-model= LogisticRegression(random_state=0)
+#params = {'C': [1, 10, 100]}
+params = {"max_depth": [2, 3, None],
+        "n_estimators":[10, 100] }
+#model = LogisticRegression(random_state=0)
+model = RandomForestClassifier(random_state=0)
 clf = GridSearchCV(model, params, cv=4)
 clf.fit(X_trian, y) 
 
@@ -214,7 +215,6 @@ df_submit_withna = pd.DataFrame({'test_id': df_test[df_test['question1'].isnull(
 df_submit = df_submit.append(df_submit_withna, ignore_index=True)
 #%%
 df_submit.to_csv('./output/submission.csv', index=False)
-
 
 
 #%%
